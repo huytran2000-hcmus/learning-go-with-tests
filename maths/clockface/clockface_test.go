@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/go-cmp/cmp/cmpopts"
+
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -20,9 +22,7 @@ func TestSecondHandPoint(t *testing.T) {
 	for _, tt := range testcases {
 		t.Run(testName(tt.time), func(t *testing.T) {
 			got := secondHandPoint(tt.time)
-			if cmp.Equal(got, tt.want) {
-				t.Errorf("secondHandPoint(%v) = %+v, want %+v", tt.time, got, tt.want)
-			}
+			assertEqualPoints(t, got, tt.want)
 		})
 	}
 }
@@ -54,4 +54,13 @@ func simpleTime(hour, minute, second int) time.Time {
 
 func testName(t time.Time) string {
 	return t.Format("15:04:05")
+}
+
+func assertEqualPoints(t *testing.T, got, want Point) {
+	approxOption := cmpopts.EquateApprox(1e-5, 0.001)
+	result := cmp.Equal(got, want, approxOption)
+
+	if !result {
+		t.Errorf("got %#v, want %#v", got, want)
+	}
 }
