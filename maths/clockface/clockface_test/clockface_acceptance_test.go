@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/huytranpk2000/learn-go-with-tests/maths/clockface"
+	"github.com/huytranpk2000/learn-go-with-tests/maths/clockface/clockface"
 )
 
 func TestSecondHandAtMidnight(t *testing.T) {
