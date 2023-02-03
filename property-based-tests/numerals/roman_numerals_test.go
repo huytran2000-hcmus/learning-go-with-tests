@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var tests = []struct {
+var romanAndArabicTests = []struct {
 	arabic uint16
 	roman  string
 }{
@@ -37,9 +37,8 @@ var tests = []struct {
 }
 
 func TestConvertToRoman(t *testing.T) {
-	for _, tt := range tests {
+	for _, tt := range romanAndArabicTests {
 		t.Run(fmt.Sprintf("%d gets converted to %s", tt.arabic, tt.roman), func(t *testing.T) {
-			t.Parallel()
 			got, _ := ConvertToRoman(tt.arabic)
 			want := tt.roman
 
@@ -51,7 +50,7 @@ func TestConvertToRoman(t *testing.T) {
 }
 
 func TestConvertToArabic(t *testing.T) {
-	for _, tt := range tests {
+	for _, tt := range romanAndArabicTests {
 		t.Run(fmt.Sprintf("%s gets converted to %d", tt.roman, tt.arabic), func(t *testing.T) {
 			got := ConvertToArabic(tt.roman)
 			want := tt.arabic
@@ -65,7 +64,7 @@ func TestConvertToArabic(t *testing.T) {
 
 func TestConvertInvalidArabicToRoman(t *testing.T) {
 	for i := 1; i <= 10; i++ {
-		arabic := MaximumRomanNumeralVal + uint16(i*i)
+		arabic := MaximumRomanNumeralValue + uint16(i*i)
 		t.Run(fmt.Sprintf("%d convert roman numeral return error", arabic), func(t *testing.T) {
 			_, err := ConvertToRoman(arabic)
 
@@ -76,11 +75,43 @@ func TestConvertInvalidArabicToRoman(t *testing.T) {
 	}
 }
 
+func TestIsValidRomanNumeral(t *testing.T) {
+	testcases := []struct {
+		roman string
+		want  bool
+	}{
+		{"I", true},
+		{"IIII", false},
+		{"IIIII", false},
+		{"XXXX", false},
+		{"VV", false},
+		{"IIX", false},
+		{"IIIX", false},
+		{"VX", false},
+		{"IXX", false},
+		{"MMMCMXCIX", true},
+		{"MMMM", false},
+		{"XLX", false},
+		{"CMD", false},
+		{"CIXI", false},
+	}
+
+	for _, tt := range testcases {
+		t.Run(tt.roman, func(t *testing.T) {
+			got := IsValidRomanNumeral(tt.roman)
+
+			if got != tt.want {
+				t.Errorf("IsValidRomanNumeral(%q) = %t, want %t", tt.roman, got, tt.want)
+			}
+		})
+	}
+}
+
 func FuzzConvertToRomanAndBackProperty(f *testing.F) {
-	for _, tt := range tests {
+	for _, tt := range romanAndArabicTests {
 		f.Add(tt.arabic)
 	}
-	f.Add(uint16(3999))
+	f.Add(MaximumRomanNumeralValue)
 	f.Add(uint16(10000))
 
 	f.Fuzz(func(t *testing.T, arabic uint16) {
