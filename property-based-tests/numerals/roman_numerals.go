@@ -63,14 +63,18 @@ func ConvertToRoman(arabic uint16) (string, error) {
 	return result.String(), nil
 }
 
-func ConvertToArabic(roman string) uint16 {
+func ConvertToArabic(roman string) (uint16, error) {
+	if !IsValidRomanNumeral(roman) {
+		return 0, fmt.Errorf("invalid roman numeral: %s", roman)
+	}
+
 	var total uint16
 	symbols := parseRomanSymbols(roman)
 	for _, symbol := range symbols {
 		total += valueOfRomanSymbol(symbol)
 	}
 
-	return total
+	return total, nil
 }
 
 func IsValidRomanNumeral(roman string) bool {

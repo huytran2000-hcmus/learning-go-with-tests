@@ -52,9 +52,12 @@ func TestConvertToRoman(t *testing.T) {
 func TestConvertToArabic(t *testing.T) {
 	for _, tt := range romanAndArabicTests {
 		t.Run(fmt.Sprintf("%s gets converted to %d", tt.roman, tt.arabic), func(t *testing.T) {
-			got := ConvertToArabic(tt.roman)
-			want := tt.arabic
+			got, err := ConvertToArabic(tt.roman)
+			if err != nil {
+				t.Errorf("unexpected error: %s", err)
+			}
 
+			want := tt.arabic
 			if got != want {
 				t.Errorf("ConvertToArabic(%q) = %d, want %d", tt.arabic, got, want)
 			}
@@ -120,7 +123,10 @@ func FuzzConvertToRomanAndBackProperty(f *testing.F) {
 			t.Skip("Invalid number to convert to roman")
 		}
 
-		fromRoman := ConvertToArabic(roman)
+		fromRoman, _ := ConvertToArabic(roman)
+		if err != nil {
+			t.Errorf("unexpected error: %s", err)
+		}
 
 		if fromRoman != arabic {
 			t.Errorf(
