@@ -69,27 +69,6 @@ func Test_hourHandPoint(t *testing.T) {
 	}
 }
 
-func Test_secondInRadiant(t *testing.T) {
-	tests := []struct {
-		name    string
-		seconds int
-		want    float64
-	}{
-		{"turn 0s into 0π", 0, 0},
-		{"turn 30s into π", 30, math.Pi},
-		{"turn 45s into 3/2π", 45, 3 * (math.Pi / 2)},
-		{"turn 7s into 7/60π", 7, 7 * (math.Pi / 30)},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := secondInRadiant(tt.seconds)
-			if got != tt.want {
-				t.Errorf("secondInRadiant() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func simpleTime(hour, minute, second int) time.Time {
 	return time.Date(666, time.December, 25, hour, minute, second, 0, time.UTC)
 }

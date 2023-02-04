@@ -34,7 +34,7 @@ func SVGWriter(w io.Writer, tm time.Time) {
 func secondHandTag(tm time.Time) string {
 	p := SecondHand(tm)
 	return fmt.Sprintf(
-		`<line x1="150" y1="150" x2="%.3f" y2="%.3f" style="fill:none;stroke:#f00;stroke-width:3px;">%s</line>`,
+		`<line x1="150" y1="150" x2="%.3f" y2="%.3f" style="fill:none;stroke:#f00;stroke-width:1px;">%s</line>`,
 		p.X,
 		p.Y,
 		SecondHandText,
