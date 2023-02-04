@@ -94,6 +94,35 @@ func TestSVGWriterMinuteHand(t *testing.T) {
 	}
 }
 
+func TestSVGWriterHour(t *testing.T) {
+	testcases := []struct {
+		time time.Time
+		want Line
+	}{
+		{simpleTime(0, 0, 0), hourHandLine(150, 100)},
+		{simpleTime(6, 0, 0), hourHandLine(150, 200)},
+		{simpleTime(3, 0, 0), hourHandLine(200, 150)},
+		{simpleTime(9, 0, 0), hourHandLine(100, 150)},
+	}
+
+	for _, tt := range testcases {
+		t.Run(testName(tt.time), func(t *testing.T) {
+			var buf bytes.Buffer
+			clockface.SVGWriter(&buf, tt.time)
+
+			var svg SVG
+			err := xml.Unmarshal(buf.Bytes(), &svg)
+			if err != nil {
+				t.Error("Shouldn't have an error, but got: ", err)
+			}
+
+			if !containLine(tt.want, svg.Lines) {
+				t.Errorf("Expected the hour hand line at %+v, in SVG lines: %+v", tt.want, svg.Lines)
+			}
+		})
+	}
+}
+
 func containLine(line Line, lines []Line) bool {
 	approxOpt := cmpopts.EquateApprox(0.000001, 0.001)
 	for _, l := range lines {
@@ -122,6 +151,16 @@ func secondHandLine(x2, y2 float64) Line {
 func minuteHandLine(x2, y2 float64) Line {
 	return Line{
 		Text: clockface.MinuteHandText,
+		X1:   150,
+		Y1:   150,
+		X2:   x2,
+		Y2:   y2,
+	}
+}
+
+func hourHandLine(x2, y2 float64) Line {
+	return Line{
+		Text: clockface.HourHandText,
 		X1:   150,
 		Y1:   150,
 		X2:   x2,

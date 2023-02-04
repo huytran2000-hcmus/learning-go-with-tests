@@ -48,6 +48,27 @@ func Test_minuteHandPoint(t *testing.T) {
 	}
 }
 
+func Test_hourHandPoint(t *testing.T) {
+	testcases := []struct {
+		time time.Time
+		want Point
+	}{
+		{simpleTime(0, 0, 0), Point{0, 1}},
+		{simpleTime(12, 0, 0), Point{0, 1}},
+		{simpleTime(6, 0, 0), Point{0, -1}},
+		{simpleTime(3, 0, 0), Point{1, 0}},
+		{simpleTime(9, 0, 0), Point{-1, 0}},
+		{simpleTime(4, 0, 0), Point{math.Sqrt(3) / 2, -0.5}},
+	}
+
+	for _, tt := range testcases {
+		t.Run(testName(tt.time), func(t *testing.T) {
+			got := hourHandPoint(tt.time)
+			assertEqualPoints(t, got, tt.want)
+		})
+	}
+}
+
 func Test_secondInRadiant(t *testing.T) {
 	tests := []struct {
 		name    string

@@ -9,6 +9,7 @@ import (
 const (
 	SecondHandText = "Second Hand"
 	MinuteHandText = "Minute Hand"
+	HourHandText   = "Hour Hand"
 )
 
 const (
@@ -16,6 +17,7 @@ const (
 	clockCentreY     = 150
 	secondHandLength = 90
 	minuteHandLength = 80
+	hourHandLength   = 50
 )
 
 func SVGWriter(w io.Writer, tm time.Time) {
@@ -24,6 +26,7 @@ func SVGWriter(w io.Writer, tm time.Time) {
 
 	io.WriteString(w, secondHandTag(tm))
 	io.WriteString(w, minuteHandTag(tm))
+	io.WriteString(w, hourHandTag(tm))
 
 	io.WriteString(w, svgEnd)
 }
@@ -48,6 +51,16 @@ func minuteHandTag(tm time.Time) string {
 	)
 }
 
+func hourHandTag(tm time.Time) string {
+	p := HourHand(tm)
+	return fmt.Sprintf(
+		`<line x1="150" y1="150" x2="%.3f" y2="%.3f" style="fill:none;stroke:#000;stroke-width:3px;">%s</line>`,
+		p.X,
+		p.Y,
+		HourHandText,
+	)
+}
+
 func SecondHand(tm time.Time) Point {
 	p := secondHandPoint(tm)
 	return makeHand(p, secondHandLength)
@@ -57,6 +70,12 @@ func MinuteHand(tm time.Time) Point {
 	p := minuteHandPoint(tm)
 
 	return makeHand(p, minuteHandLength)
+}
+
+func HourHand(tm time.Time) Point {
+	p := hourHandPoint(tm)
+
+	return makeHand(p, hourHandLength)
 }
 
 func makeHand(p Point, length float64) Point {

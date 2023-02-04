@@ -20,6 +20,11 @@ func minuteHandPoint(t time.Time) Point {
 	return radiantToPoint(rad)
 }
 
+func hourHandPoint(t time.Time) Point {
+	rad := hourInRadiant(t.Hour())
+	return radiantToPoint(rad)
+}
+
 func radiantToPoint(rad float64) Point {
 	x := math.Sin(rad)
 	y := math.Cos(rad)
@@ -33,4 +38,8 @@ func secondInRadiant(second int) float64 {
 
 func minuteInRadiant(minute int) float64 {
 	return math.Pi / (30 / float64(minute))
+}
+
+func hourInRadiant(hour int) float64 {
+	return math.Pi / (6 / float64(hour))
 }
