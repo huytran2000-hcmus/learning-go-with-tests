@@ -8,36 +8,60 @@ import (
 
 const (
 	SecondHandText = "Second Hand"
+	MinuteHandText = "Minute Hand"
 )
 
 const (
-	secondHandLength = 90
 	clockCentreX     = 150
 	clockCentreY     = 150
+	secondHandLength = 90
+	minuteHandLength = 80
 )
 
-func SVGWriter(w io.Writer, t time.Time) {
+func SVGWriter(w io.Writer, tm time.Time) {
 	io.WriteString(w, svgStart)
 	io.WriteString(w, bezel)
 
-	p := SecondHand(t)
-	io.WriteString(w, secondHandTag(p))
+	io.WriteString(w, secondHandTag(tm))
+	io.WriteString(w, minuteHandTag(tm))
 
 	io.WriteString(w, svgEnd)
 }
 
-func secondHandTag(p Point) string {
-	return fmt.Sprintf(`<line x1="150" y1="150" x2="%.3f" y2="%.3f" style="fill:none;stroke:#f00;stroke-width:3px;">%s</line>`, p.X, p.Y, SecondHandText)
+func secondHandTag(tm time.Time) string {
+	p := SecondHand(tm)
+	return fmt.Sprintf(
+		`<line x1="150" y1="150" x2="%.3f" y2="%.3f" style="fill:none;stroke:#f00;stroke-width:3px;">%s</line>`,
+		p.X,
+		p.Y,
+		SecondHandText,
+	)
 }
 
-func SecondHand(t time.Time) Point {
-	p := secondHandPoint(t)
+func minuteHandTag(tm time.Time) string {
+	p := MinuteHand(tm)
+	return fmt.Sprintf(
+		`<line x1="150" y1="150" x2="%.3f" y2="%.3f" style="fill:none;stroke:#000;stroke-width:3px;">%s</line>`,
+		p.X,
+		p.Y,
+		MinuteHandText,
+	)
+}
 
-	p.X = p.X * secondHandLength
-	p.Y = p.Y * secondHandLength
+func SecondHand(tm time.Time) Point {
+	p := secondHandPoint(tm)
+	return makeHand(p, secondHandLength)
+}
 
-	p.X = clockCentreX + p.X
-	p.Y = clockCentreY - p.Y
+func MinuteHand(tm time.Time) Point {
+	p := minuteHandPoint(tm)
+
+	return makeHand(p, minuteHandLength)
+}
+
+func makeHand(p Point, length float64) Point {
+	p = Point{X: p.X * length, Y: p.Y * length}
+	p = Point{X: clockCentreX + p.X, Y: clockCentreY - p.Y}
 
 	return p
 }

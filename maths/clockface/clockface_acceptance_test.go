@@ -53,6 +53,7 @@ func TestSVGWriterSecondHand(t *testing.T) {
 		t.Run(testName(tt.time), func(t *testing.T) {
 			b := bytes.Buffer{}
 			clockface.SVGWriter(&b, tt.time)
+
 			svg := SVG{}
 			err := xml.Unmarshal(b.Bytes(), &svg)
 			if err != nil {
@@ -61,6 +62,33 @@ func TestSVGWriterSecondHand(t *testing.T) {
 
 			if !containLine(tt.want, svg.Lines) {
 				t.Errorf("Expected to find the second hand line %+v, in SVG lines %+v", tt.want, svg.Lines)
+			}
+		})
+	}
+}
+
+func TestSVGWriterMinuteHand(t *testing.T) {
+	testcases := []struct {
+		time time.Time
+		want Line
+	}{
+		{time: simpleTime(0, 0, 0), want: minuteHandLine(150, 70)},
+		{time: simpleTime(0, 30, 0), want: minuteHandLine(150, 230)},
+		{time: simpleTime(0, 10, 0), want: minuteHandLine(150+math.Sqrt(3)*80/2, 150-40)},
+	}
+	for _, tt := range testcases {
+		t.Run(testName(tt.time), func(t *testing.T) {
+			b := bytes.Buffer{}
+			clockface.SVGWriter(&b, tt.time)
+
+			svg := SVG{}
+			err := xml.Unmarshal(b.Bytes(), &svg)
+			if err != nil {
+				t.Fatalf("Didn't expected an error: %v", err)
+			}
+
+			if !containLine(tt.want, svg.Lines) {
+				t.Errorf("Expected to find the minute hand line %+v, in SVG lines %+v", tt.want, svg.Lines)
 			}
 		})
 	}
@@ -84,6 +112,16 @@ func simpleTime(hour, minute, second int) time.Time {
 func secondHandLine(x2, y2 float64) Line {
 	return Line{
 		Text: clockface.SecondHandText,
+		X1:   150,
+		Y1:   150,
+		X2:   x2,
+		Y2:   y2,
+	}
+}
+
+func minuteHandLine(x2, y2 float64) Line {
+	return Line{
+		Text: clockface.MinuteHandText,
 		X1:   150,
 		Y1:   150,
 		X2:   x2,

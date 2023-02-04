@@ -10,18 +10,39 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestSecondHandPoint(t *testing.T) {
+func Test_secondHandPoint(t *testing.T) {
 	testcases := []struct {
 		time time.Time
 		want Point
 	}{
-		{simpleTime(0, 0, 30), Point{0, -1}},
+		{time: simpleTime(0, 0, 30), want: Point{0, -1}},
 		{simpleTime(0, 0, 15), Point{1, 0}},
+		{simpleTime(0, 0, 30), Point{0, -1}},
+		{simpleTime(0, 0, 45), Point{-1, 0}},
 	}
 
 	for _, tt := range testcases {
 		t.Run(testName(tt.time), func(t *testing.T) {
 			got := secondHandPoint(tt.time)
+			assertEqualPoints(t, got, tt.want)
+		})
+	}
+}
+
+func Test_minuteHandPoint(t *testing.T) {
+	testcases := []struct {
+		time time.Time
+		want Point
+	}{
+		{simpleTime(0, 0, 0), Point{0, 1}},
+		{simpleTime(0, 15, 0), Point{1, 0}},
+		{simpleTime(0, 30, 0), Point{0, -1}},
+		{simpleTime(0, 45, 0), Point{-1, 0}},
+	}
+
+	for _, tt := range testcases {
+		t.Run(testName(tt.time), func(t *testing.T) {
+			got := minuteHandPoint(tt.time)
 			assertEqualPoints(t, got, tt.want)
 		})
 	}
