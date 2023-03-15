@@ -1,4 +1,4 @@
-package blogpost
+package domain
 
 import (
 	"io/fs"

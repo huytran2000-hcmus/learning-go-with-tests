@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/huytranpk2000/learn-go-with-tests/maths/clockface"
+	"github.com/huytran2000-hcmus/learn-go-with-tests/maths/clockface"
 
 	"github.com/google/go-cmp/cmp/cmpopts"
 

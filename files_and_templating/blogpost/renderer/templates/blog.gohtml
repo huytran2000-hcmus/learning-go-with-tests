@@ -1,0 +1,6 @@
+{{template "header" .}}
+<main>
+    {{.HTMLBody}}
+    <ul>Tags: {{range .Tags}}<li>{{.}}</li>{{end}}</ul>
+</main>
+{{template "footer" .}}

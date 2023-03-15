@@ -1,12 +1,12 @@
-package blogpost_test
+package domain_test
 
 import (
 	"testing"
 	"testing/fstest"
 
-	"github.com/google/go-cmp/cmp"
+	"github.com/huytran2000-hcmus/learn-go-with-tests/files_and_templating/blogpost/domain"
 
-	"github.com/huytranpk2000/learn-go-with-tests/files/blogpost"
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestNewBlogPostsFromFS(t *testing.T) {
@@ -24,13 +24,13 @@ Tags: rust, borrow-checker
 Rust is gay`)},
 	}
 
-	posts, err := blogpost.NewPostsFromFS(fs)
+	posts, err := domain.NewPostsFromFS(fs)
 	assertNoError(t, err)
 
 	assertPostLength(t, posts, fs)
 
 	got := posts[0]
-	want := blogpost.Post{
+	want := domain.Post{
 		Title:       "Post 1",
 		Description: "Description 1",
 		Tags:        []string{"tdd", "go"},
@@ -40,14 +40,14 @@ World`,
 	assertPost(t, got, want)
 }
 
-func assertPost(t *testing.T, got blogpost.Post, want blogpost.Post) {
+func assertPost(t *testing.T, got domain.Post, want domain.Post) {
 	t.Helper()
 	if !cmp.Equal(got, want) {
 		t.Errorf("diff -want +got\n%s", cmp.Diff(want, got))
 	}
 }
 
-func assertPostLength(t *testing.T, posts []blogpost.Post, fs fstest.MapFS) {
+func assertPostLength(t *testing.T, posts []domain.Post, fs fstest.MapFS) {
 	t.Helper()
 	if len(posts) != len(fs) {
 		t.Errorf("fs = %v\n"+

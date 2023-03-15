@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/huytranpk2000/learn-go-with-tests/maths/clockface"
+	"github.com/huytran2000-hcmus/learn-go-with-tests/maths/clockface"
 )
 
 func main() {
