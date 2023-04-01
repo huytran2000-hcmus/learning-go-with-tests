@@ -1,4 +1,4 @@
-package arraysandslices
+package generics
 
 import (
 	"testing"
@@ -21,6 +21,25 @@ func TestSumAll(t *testing.T) {
 	want := []int{6, 10}
 
 	AssertEqual(t, got, want)
+}
+
+func TestBadBank(t *testing.T) {
+	transactions := []Transaction{
+		{
+			From: "Chris",
+			To:   "Riya",
+			Sum:  100,
+		},
+		{
+			From: "Adil",
+			To:   "Chris",
+			Sum:  25,
+		},
+	}
+
+	AssertEqual(t, BalanceFor(transactions, "Chris"), -75)
+	AssertEqual(t, BalanceFor(transactions, "Adil"), -25)
+	AssertEqual(t, BalanceFor(transactions, "Riya"), 100)
 }
 
 func TestSumAllTails(t *testing.T) {

@@ -1,4 +1,4 @@
-package arraysandslices
+package generics
 
 func Sum(numbers []int) int {
 	add := func(accumulated, val int) int {
@@ -34,7 +34,7 @@ func SumAllTails(arraysOfNumbs ...[]int) []int {
 	return sums
 }
 
-func Reduce[T any](collection []T, accumulator func(T, T) T, initalVal T) T {
+func Reduce[T, R any](collection []T, accumulator func(R, T) R, initalVal R) R {
 	result := initalVal
 	for _, a := range collection {
 		result = accumulator(result, a)
