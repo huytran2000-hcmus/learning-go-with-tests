@@ -1,34 +1,44 @@
 package arraysandslices
 
 func Sum(numbers []int) int {
-	var sum int
-	for _, i := range numbers {
-		sum += i
+	add := func(accumulated, val int) int {
+		return accumulated + val
 	}
+
+	sum := Reduce(numbers, add, 0)
 
 	return sum
 }
 
 func SumAll(arraysOfNumbs ...[]int) []int {
-	var sums []int
-
-	for _, numbers := range arraysOfNumbs {
-		sums = append(sums, Sum(numbers))
+	addAll := func(accumulated, val []int) []int {
+		return append(accumulated, Sum(val))
 	}
+	sums := Reduce(arraysOfNumbs, addAll, []int{})
 
 	return sums
 }
 
 func SumAllTails(arraysOfNumbs ...[]int) []int {
-	var sums []int
-	for _, numbers := range arraysOfNumbs {
-		if len(numbers) > 0 {
-			tail := numbers[1:]
-			sums = append(sums, Sum(tail))
+	addAllTails := func(accumulated, val []int) []int {
+		if len(val) > 0 {
+			tail := val[1:]
+			return append(accumulated, Sum(tail))
 		} else {
-			sums = append(sums, 0)
+			return append(accumulated, 0)
 		}
 	}
 
+	sums := Reduce(arraysOfNumbs, addAllTails, []int{})
+
 	return sums
+}
+
+func Reduce[T any](collection []T, accumulator func(T, T) T, initalVal T) T {
+	result := initalVal
+	for _, a := range collection {
+		result = accumulator(result, a)
+	}
+
+	return result
 }

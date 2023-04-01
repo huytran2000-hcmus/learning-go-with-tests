@@ -1,8 +1,9 @@
 package arraysandslices
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestSum(t *testing.T) {
@@ -11,9 +12,7 @@ func TestSum(t *testing.T) {
 		got := Sum(numbers)
 		want := 15
 
-		if got != want {
-			t.Errorf("got %d, want %d", got, want)
-		}
+		AssertEqual(t, got, want)
 	})
 }
 
@@ -21,24 +20,16 @@ func TestSumAll(t *testing.T) {
 	got := SumAll([]int{1, 2, 3}, []int{0, 1, 9})
 	want := []int{6, 10}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %v, want %v", got, want)
-	}
+	AssertEqual(t, got, want)
 }
 
 func TestSumAllTails(t *testing.T) {
-	checkSums := func(t testing.TB, got, want []int) {
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("got %v, want %v", got, want)
-		}
-	}
-
 	t.Run("make the sums of some slice",
 		func(t *testing.T) {
 			got := SumAllTails([]int{1, 2}, []int{0, 9})
 			want := []int{2, 9}
 
-			checkSums(t, got, want)
+			AssertEqual(t, got, want)
 		})
 
 	t.Run("safely sum empty slices",
@@ -46,6 +37,30 @@ func TestSumAllTails(t *testing.T) {
 			got := SumAllTails([]int{}, []int{})
 			want := []int{0, 0}
 
-			checkSums(t, got, want)
+			AssertEqual(t, got, want)
 		})
+}
+
+func TestReduce(t *testing.T) {
+	t.Run("multiplication of all elements", func(t *testing.T) {
+		multiply := func(accumulated, val int) int {
+			return accumulated * val
+		}
+
+		AssertEqual(t, Reduce([]int{1, 2, 3}, multiply, 1), 6)
+	})
+
+	t.Run("concatenate strings", func(t *testing.T) {
+		concatenate := func(accumalated, val string) string {
+			return accumalated + val
+		}
+
+		AssertEqual(t, Reduce([]string{"a", "b", "c"}, concatenate, ""), "abc")
+	})
+}
+
+func AssertEqual[T any](t testing.TB, got, want T) {
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("got %v, want %v", got, want)
+	}
 }
